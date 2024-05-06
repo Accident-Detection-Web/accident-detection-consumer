@@ -37,8 +37,6 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 //        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 50);
 
-
-
         return props;
     }
 
@@ -51,7 +49,7 @@ public class KafkaConsumerConfig {
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
-        factory.setConcurrency(5);
+        factory.setConcurrency(3); // partition ratio : thread = 1 : 1
         return factory;
     }
 }
