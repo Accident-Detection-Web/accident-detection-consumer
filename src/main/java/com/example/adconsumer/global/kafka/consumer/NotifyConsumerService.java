@@ -2,10 +2,8 @@ package com.example.adconsumer.global.kafka.consumer;
 
 import com.example.adconsumer.domain.notify.dto.NotifyMessage;
 import com.example.adconsumer.domain.notify.entity.Notify;
-import com.example.adconsumer.domain.notify.repository.NotifyRepository;
 import com.example.adconsumer.domain.notify.service.NotifyService;
 import com.example.adconsumer.domain.user.entity.User;
-import com.example.adconsumer.domain.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

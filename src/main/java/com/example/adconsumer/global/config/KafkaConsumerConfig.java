@@ -49,7 +49,7 @@ public class KafkaConsumerConfig {
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
-        factory.setConcurrency(3); // partition ratio : thread = 1 : 1
+        factory.setConcurrency(3); // partition ratio : consumer = 1 : 1, 3 consumer in consumer group
         return factory;
     }
 }
