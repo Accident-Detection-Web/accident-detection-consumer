@@ -1,6 +1,6 @@
 package com.example.adconsumer.domain.user.repository;
 
-import com.example.accidentdetectionservice.domain.user.entity.User;
+import com.example.adconsumer.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
