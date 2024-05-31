@@ -3,9 +3,9 @@ spring:
     import: "classpath:application-secret.yml"
 
   datasource:
-    url: jdbc:mysql://localhost:3306/capstone
-    username: root
-    password: 1234
+    url: jdbc:mysql://db-capstone.ckklth9vipd7.ap-northeast-2.rds.amazonaws.com:3306/capstone
+    username: admin
+    password: Abcd123~
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -40,4 +40,4 @@ jwt:
     key: 7Iqk7YyM66W07YOA7L2U65Sp7YG065+9U3ByaW5n6rCV7J2Y7Yqc7YSw7LWc7JuQ67mI7J6F64uI64ukLg==
 
 server:
-  port: 8081
+  port: 8082
