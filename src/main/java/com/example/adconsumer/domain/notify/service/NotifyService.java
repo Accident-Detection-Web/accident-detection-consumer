@@ -7,6 +7,7 @@ import com.example.adconsumer.domain.notify.repository.NotifyRepository;
 
 import com.example.adconsumer.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -20,6 +21,7 @@ import static com.example.adconsumer.domain.notify.dto.NotifyDto.Response.create
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class NotifyService {
 
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
@@ -63,10 +65,12 @@ public class NotifyService {
         try {
             emitter.send(SseEmitter.event()
                 .id(eventId)
-                .name("sse")
+                .name("accident")
                 .data(data)
             );
+            log.info("Send Accident Notification");
         } catch (IOException exception) {
+            log.error("Error sendNotification = {}", exception.toString());
             emitterRepository.deleteById(emitterId);
         }
     }
@@ -79,12 +83,14 @@ public class NotifyService {
     public void send(User receiver, Notify.NotificationType notificationType, String content,
                      String url) {
         Notify notification = notifyRepository.save(createNotification(receiver, notificationType, content, url));
-
+        log.info("Create Accident Notification Entity");
         String receiverEmail = receiver.getEmail();
         String eventId = receiverEmail + "_" + System.currentTimeMillis();
         Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(receiverEmail);
+        log.info("Find User Emitter");
         emitters.forEach(
             (key, emitter) ->{
+                log.info("Create Accident Notification");
                 emitterRepository.saveEventCache(key, notification);
                 sendNotification(emitter, eventId, key, createResponse(notification));
             }
