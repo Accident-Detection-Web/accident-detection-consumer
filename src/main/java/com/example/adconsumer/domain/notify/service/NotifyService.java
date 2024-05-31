@@ -6,6 +6,7 @@ import com.example.adconsumer.domain.notify.repository.EmitterRepository;
 import com.example.adconsumer.domain.notify.repository.NotifyRepository;
 
 import com.example.adconsumer.domain.user.entity.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class NotifyService {
 
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final EmitterRepository emitterRepository;
     private final NotifyRepository notifyRepository;
 
@@ -63,10 +65,11 @@ public class NotifyService {
 
     private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data) {
         try {
+            String jsonData = objectMapper.writeValueAsString(data);
             emitter.send(SseEmitter.event()
                 .id(eventId)
                 .name("accident")
-                .data(data)
+                .data(jsonData)
             );
             log.info("Send Accident Notification");
         } catch (IOException exception) {
@@ -83,14 +86,20 @@ public class NotifyService {
     public void send(User receiver, Notify.NotificationType notificationType, String content,
                      String url) {
         Notify notification = notifyRepository.save(createNotification(receiver, notificationType, content, url));
-        log.info("Create Accident Notification Entity");
-        String receiverEmail = receiver.getEmail();
+        String receiverEmail = receiver.getUsername();
         String eventId = receiverEmail + "_" + System.currentTimeMillis();
         Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(receiverEmail);
-        log.info("Find User Emitter");
+
+        log.info("username = {}", receiverEmail);
+        log.info("emitters = {}", emitters);
+
+        emitters.entrySet().stream().findFirst().ifPresent(entry -> {
+            log.info("First Emitter Key = {}", entry.getKey());
+            log.info("First Emitter Value = {}", entry.getValue());
+        });
+
         emitters.forEach(
             (key, emitter) ->{
-                log.info("Create Accident Notification");
                 emitterRepository.saveEventCache(key, notification);
                 sendNotification(emitter, eventId, key, createResponse(notification));
             }
